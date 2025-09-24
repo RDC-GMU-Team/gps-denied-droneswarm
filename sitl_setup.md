@@ -21,5 +21,12 @@ For windows install wsl in powershell with:
 6. Finally, ensure everything works with - https://ardupilot.org/dev/docs/ros2-sitl.html#ros2-sitl
     i. I ran into an issue where the file was missing in $(ros2 pkg prefix ardupilot_sitl)/share/ardupilot_sitl/config/dds_xrce_profile.xml, in case you run into the same issue I've added the file to this repo. Just vim dds_xrce_profile.xml then copy and paste the code from the repo.
 
-7. Gazebo - 
-  
+7. Binary install gazebo harmonic - https://gazebosim.org/docs/harmonic/install_ubuntu
+8. Finish with this guide - gazebosim.org/docs/harmonic/install_ubuntu
+
+After following each step carefully you should be able to do:
+cd ardu_ws
+source install/setup.bash
+ros2 launch ardupilot_gz_bringup iris_runway.launch.py
+
+And it should bring up gazebo and start an ardupilot SITL. You can check ROS topics in another terminal by running ros2 topic list.
