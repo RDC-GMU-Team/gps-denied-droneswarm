@@ -3,7 +3,9 @@
 import rclpy
 from rclpy.node import Node
 from mavros_msgs.msg import State
-from mavros_msgs.srv import CommandBool, SetMode, CommandTOL 
+from mavros_msgs.srv import CommandBool, SetMode, CommandTOL  
+from geographic_msgs.msg import GeoPoseStamped
+from std_msgs.msg import Header
 import time
 
 class Controller(Node):
@@ -23,8 +25,9 @@ class Controller(Node):
         # Service clients
         self.arming_client = self.create_client(CommandBool, '/mavros/cmd/arming')
         self.set_mode_client = self.create_client(SetMode, '/mavros/set_mode')
-        self.takeoff_client = self.create_client(CommandTOL, 'mavros/cmd/takeoff')
-
+        self.takeoff_client = self.create_client(CommandTOL, '/mavros/cmd/takeoff')
+        
+        self.global_pos_pub = self.create_publisher(GeoPoseStamped, '/mavros/setpoint_position/global', 10)
 
         while not self.arming_client.wait_for_service(timeout_sec=1.0):
             self.get_logger().info('Arming service not available, waiting...')
@@ -113,17 +116,62 @@ class Controller(Node):
             self.get_logger().error(f"Local takeoff command failed")
             return False
 
+    def move_to_gps(self, latitude, longitude, altitude, duration=30):
+        """Move to a specific GPS coordinate using setpoint_position/global"""
+        self.get_logger().info(f"Going to GPS: lat={latitude}, lon={longitude}, alt={altitude}")
+        
+        # Create the GeoPoseStamped message
+        msg = GeoPoseStamped()
+        msg.header = Header()
+        msg.header.stamp = self.get_clock().now().to_msg()
+        msg.header.frame_id = "global"
+        
+        # Set position (latitude, longitude in degrees, altitude in meters)
+        msg.pose.position.latitude = latitude
+        msg.pose.position.longitude = longitude
+        msg.pose.position.altitude = altitude      
+
+        self.get_logger().info("Publishing GPS setpoint for {} seconds...".format(duration))
+        start_time = time.time()
+        rate = self.create_rate(2)  # 2 Hz
+        
+        while time.time() - start_time < duration:
+            msg.header.stamp = self.get_clock().now().to_msg()
+            self.global_pos_pub.publish(msg)
+            
+            # Log periodically
+            if int(time.time() - start_time) % 5 == 0:
+                self.get_logger().info(f"Publishing GPS setpoint... {int(time.time() - start_time)}s elapsed")
+            
+            try:
+                rate.sleep()
+            except:
+                break
+        
+        self.get_logger().info("GPS setpoint publishing completed")
+        return True
+
 def main():
     rclpy.init()
     
     # Create the controller class
     controller = Controller()
     try:
-        controller.takeoff(altitude=10.0)
+        if controller.takeoff(altitude=5.0):
+            time.sleep(5)
+            target_lat = -35.363252
+            target_lon = 149.1652374
+            target_alt = 615.638 meters
+            ontroller.get_logger().info(f"Moving to: {target_lat:.6f}, {target_lon:.6f}, alt: {target_alt:.1f}m")
+            controller.move_to_gps(target_lat, target_lon, target_alt, duration=30)
+
         rclpy.spin(controller)
     except KeyboardInterrupt:
         print("\nShutting down...")
+    except Exception as e:
+        controller.get_logger().error(f"Error: {e}")
     finally:
+        controller.set_mode("RTL")
         controller.destroy_node()
         rclpy.shutdown()
 
