@@ -8,7 +8,7 @@ For windows install wsl in powershell with:
 	Run Ubuntu and set up 
 
 1. Install ros-humble-desktop for Ubuntu - https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html
-  	i. After following each step in the guide, setup the environment with source /opt/ros/humble/setup.bash and verify that ros works with the examples in the guide.
+  	i. After following each step in the guide, setup the environment with ```source /opt/ros/humble/setup.bash``` and verify that ros works with the examples in the guide.
 2. Make a directory called microros_ws in your home directory and build micro-ros from source - https://micro.ros.org/docs/tutorials/core/first_application_linux
     i. Follow each step in the guide, skipping the step where it talks about a custom app, also ensure that it works with the examples at the end.
 3. Build ardupilot SITL:
