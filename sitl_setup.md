@@ -2,7 +2,7 @@ For simulation we will be using ArduPilot SITL and Gazebo in conjuction with ROS
 
 Pre reqs: Must have Linux or Windows, if you have a Mac you have to set up a virtual Linux machine (or remote desktop into a Linux/Windows machine).
 > [!IMPORTANT]
-> Note: Allocate atleast 50 GB on your VM to be able store all the build files / tools.
+> Note: Allocate at least 50 GB on your VM to be able store all the build files / tools.
 
 For Windows install wsl in powershell with: `wsl --install` Then go to the microsoft store and install Ubuntu 22.04 (VERSION IS IMPORTANT). Run Ubuntu and set up.
 
