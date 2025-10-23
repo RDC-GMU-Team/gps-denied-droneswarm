@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypelayout="1.0"?>
+<package format="3">
+  <name>my_vio_launch</name>
+  <version>0.0.0</version>
+  <description>Launch files for VIO system</description>
+  <maintainer email="pi@todo.todo">pi</maintainer>
+  <license>Apache-2.0</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+  
+  <exec_depend>openmv_listener</exec_depend>
+  
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
