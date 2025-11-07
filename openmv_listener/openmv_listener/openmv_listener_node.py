@@ -1,12 +1,14 @@
 import rclpy
 from rclpy.node import Node
 from openmv_listener.serial_reader import serialListener
-from sensor_msgs.msg import Image
+from sensor_msgs.srv import SetCameraInfo
+from sensor_msgs.msg import Image, CameraInfo
 from cv_bridge import CvBridge
 import serial
 import threading
 import cv2
-
+import os
+import yaml
 
 class openmv_listener_node(Node):
     def __init__(self, port='/dev/ttyACM0'):
@@ -23,6 +25,24 @@ class openmv_listener_node(Node):
             '/openmv/image_raw',  # Topic name
             10  # Queue size
         )
+        self.camera_info_pub = self.create_publisher(
+            CameraInfo,
+            '/openmv/camera_info',
+            10
+        )
+
+        # Current camera info (start with default/estimated values)
+        self.camera_info = CameraInfo()
+        self.camera_info.header.frame_id = "openmv_camera"
+        self.camera_info.height = 240  # Adjust to your OpenMV resolution
+        self.camera_info.width = 320   # Adjust to your OpenMV resolution
+        self.camera_info.distortion_model = "plumb_bob"
+        
+        # YOUR CALIBRATED PARAMETERS
+        self.camera_info.d = [-0.31984546, 0.13089757, 0.00502568, -0.00644578, -0.01945529]  # distortion
+        self.camera_info.k = [134.02940276, 0.0, 172.07640125, 0.0, 132.67845328, 93.81487964, 0.0, 0.0, 1.0]  # intrinsic
+        self.camera_info.r = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]  # rectification
+        self.camera_info.p = [134.02940276, 0.0, 172.07640125, 0.0, 0.0, 132.67845328, 93.81487964, 0.0, 0.0, 0.0, 1.0, 0.0]  # projection
 
         # Use a timer or thread for the serial listening
         self.serial_thread = threading.Thread(target=self.start_serial_listener)
@@ -64,6 +84,10 @@ class openmv_listener_node(Node):
 
     def publish_image(self, cv_image, frame_count):
         """Convert OpenCV image to ROS message and publish"""
+
+        self.camera_info.header.stamp = self.get_clock().now().to_msg()
+        self.camera_info_pub.publish(self.camera_info)
+
         try:
             # Convert OpenCV image to ROS Image message
             ros_image = self.bridge.cv2_to_imgmsg(cv_image, encoding='mono8')

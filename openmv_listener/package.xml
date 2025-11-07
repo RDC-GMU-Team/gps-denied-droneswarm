@@ -11,6 +11,8 @@
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>
   <depend>cv_bridge</depend>
+  <depend>std_msgs</depend>
+  
   
   <!-- Python Dependencies -->
   <depend>python3-numpy</depend>
