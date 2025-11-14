@@ -15,6 +15,8 @@ setup(
         # Install launch files
         (os.path.join('share', package_name, 'launch'), 
          glob(os.path.join('my_vio_launch', 'launch', '*.launch.py'))),
+        (os.path.join('share', package_name, 'config'), 
+         glob('config/*.yaml')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,

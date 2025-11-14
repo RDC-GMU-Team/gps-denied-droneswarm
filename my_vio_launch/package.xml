@@ -9,7 +9,8 @@
 
   <buildtool_depend>ament_python</buildtool_depend>
   
-  <exec_depend>openmv_listener</exec_depend>
+  <exec_depend>ifwater_camera</exec_depend>
+  <exec_depend>open_vins</exec_depend>
   
   <export>
     <build_type>ament_python</build_type>
