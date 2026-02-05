@@ -1,0 +1,38 @@
+{
+    "16":{
+        "id":16,
+        "friendly": true,
+        "lat" : -353632549,
+        "lon" : 1491652365,
+        "times_tried" : 0,
+        "sprayed" : false,
+        "selected" : false
+    },
+    "17":{
+        "id":17,
+        "friendly": false,
+        "lat" : 372229601,
+        "lon" : -804323466,
+        "times_tried" : 0,
+        "sprayed" : false,
+        "selected" : false
+    },
+    "18":{
+        "id":18,
+        "friendly": false,
+        "lat" : 372228677,
+        "lon" : -804324653,
+        "times_tried" : 0,
+        "sprayed" : false,
+        "selected" : false
+    },
+    "19":{
+        "id":19,
+        "friendly": false,
+        "lat" : 372229402,
+        "lon" : -804324700,
+        "times_tried" : 0,
+        "sprayed" : false,
+        "selected" : false
+    }
+}
